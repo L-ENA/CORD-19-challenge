@@ -240,7 +240,7 @@ def process_input(preds, ids, mode):
         pubmed_strings.append(" ".join(condition_to_id[c]))
 
     ###append the data
-    df['Pubmed_Search'] = pd.Series(pubmed_strings).values
+    df['Cord_ID'] = pd.Series(pubmed_strings).values
     # df['Pubmed_ID']=pd.Series(id_column).values
 
     print(df.head())
