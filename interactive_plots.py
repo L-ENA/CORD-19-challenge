@@ -46,7 +46,7 @@ def plot_data(df, base_path, plot_name, mode):
 def make_centres(n_entries):
     coordinates = [(x - 0.5, y - 0.5) for x in range(1, n_entries + 1) for y in range(1, n_entries + 1)]
     random.shuffle(coordinates)
-    print(coordinates)
+    #print(coordinates)
     return coordinates  # return coordinates
 
 
