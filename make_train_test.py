@@ -214,7 +214,7 @@ def addAbsData(spanFile, tokFile,entity, makeTest, starting_spans=True, spanID=1
     #print(domainDict)
     return domainDict
 
-def make_data(entity="C", makeTest=True, undersample_frac = 0.3, add_dev=0,add_train=50):
+def make_data(ebmnlp_path,squad_path, entity="C", makeTest=True, undersample_frac = 0.3, add_dev=0,add_train=50):
     #
     #Function to create train or test data in form of a JSON file
     #
@@ -226,21 +226,24 @@ def make_data(entity="C", makeTest=True, undersample_frac = 0.3, add_dev=0,add_t
     #dd_train: number of original squad domains that shall be added to our training file! This is where one decides how much extra data to use :)
     ################
 
-    path_to_SQUAD_dev = 'C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\data\\squad\\dev-v2.0.json'
-    path_to_SQUAD_train= 'C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\data\\squad\\train-v2.0.json'
+    path_to_SQUAD_dev = os.path.join(squad_path, "dev-v2.0.json")
+    path_to_SQUAD_train = os.path.join(squad_path, "train-v2.0.json")
+
 
     if makeTest:
         print('Reading test documents...')
         if entity == "I":
-            span_fnames = glob("C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\annotations\\aggregated\\starting_spans\\interventions\\test\\gold\\*")######for I
+            span_fnames = glob(os.path.join(ebmnlp_path,"annotations","aggregated","starting_spans","interventions","test","gold","*"))######for I
+
         elif entity == "O":
-            span_fnames = glob("C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\annotations\\aggregated\\starting_spans\\outcomes\\test\\gold\\*")###for O
+
+            span_fnames = glob(os.path.join(ebmnlp_path, "annotations", "aggregated", "starting_spans", "outcomes", "test","gold", "*"))###for O
         elif entity == "P":
-            span_fnames = glob("C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\annotations\\aggregated\\starting_spans\\participants\\test\\gold\\*")###for P
+            span_fnames = glob(os.path.join(ebmnlp_path, "annotations", "aggregated", "starting_spans", "participants", "test","gold", "*"))###for P
 
         elif entity=="C":#test data for conditions, which is a hierarchical label under the P entity
-            span_fnames = glob(
-                "C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\annotations\\aggregated\\hierarchical_labels\\participants\\test\\gold\\*")  ######for P extra spans
+            span_fnames = glob(os.path.join(ebmnlp_path, "annotations", "aggregated", "hierarchical_labels", "participants", "test","gold", "*"))  ######for P extra spans: becasue c is a hierarchical subtype of P
+
         else:
             print("Error, The paths for this entity are not yet defined")
 
@@ -249,15 +252,24 @@ def make_data(entity="C", makeTest=True, undersample_frac = 0.3, add_dev=0,add_t
     else:  # train data
         print('Reading train documents...')
         if entity == "I":
-            span_fnames = glob("C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\annotations\\aggregated\\starting_spans\\interventions\\train\\*")##FOR I
+            span_fnames = glob(
+                os.path.join(ebmnlp_path, "annotations", "aggregated", "starting_spans", "interventions", "train",
+                              "*"))  ######for I
+        elif entity == "O":
+
+            span_fnames = glob(
+                os.path.join(ebmnlp_path, "annotations", "aggregated", "starting_spans", "outcomes", "train",
+                             "*"))  ###for O
         elif entity == "P":
             span_fnames = glob(
-                "C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\annotations\\aggregated\\starting_spans\\participants\\train\\*")
-        elif entity == "O":
-            span_fnames = glob("O:\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\annotations\\aggregated\\starting_spans\\outcomes\\train\\*")
+                os.path.join(ebmnlp_path, "annotations", "aggregated", "starting_spans", "participants", "train",
+                             "*"))  ###for P
 
-        elif entity == "C":#train data for conditions, which is a hierarchical label under the P entity
-            span_fnames = glob("C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\annotations\\aggregated\\hierarchical_labels\\participants\\train\\*")######for P extra spans
+        elif entity == "C":  # test data for conditions, which is a hierarchical label under the P entity
+            span_fnames = glob(
+                os.path.join(ebmnlp_path, "annotations", "aggregated", "hierarchical_labels", "participants", "train",
+                              "*"))  ######for P extra spans: becasue c is a hierarchical subtype of P
+
         else:
             print("Error, The paths for this entity are not yet defined")
 
@@ -265,16 +277,17 @@ def make_data(entity="C", makeTest=True, undersample_frac = 0.3, add_dev=0,add_t
      #reading all token files
     print('Reading token files...')
     toks = glob(
-        "C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\documents\\*.tokens")
+        os.path.join(ebmnlp_path, "documents", "*.tokens"))
 
     tok_fnames = []
-    base = "C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00\\documents\\"
+    base = os.path.join(ebmnlp_path, "documents")
 
     for fname in span_fnames:
         pmid = os.path.splitext(os.path.basename(fname))[0].split('.')[0]  # get pubmed id, code borrowed from nye github repo
         tok_fnames.append(os.path.join(base, str(pmid) + '.tokens'))
 
     inputs = list(zip(span_fnames, tok_fnames))  # list of corresponding tuples of source file and span file
+
     #########################get files
     versionString="v2.0"
     data = {'version': versionString, 'data': []}#to have possibility of pure new squad training data
@@ -294,7 +307,7 @@ def make_data(entity="C", makeTest=True, undersample_frac = 0.3, add_dev=0,add_t
 
         data['data'].append(domainDict) #append this domain dict and make the next :)
 
-
+    print('Number of converted domains {}'.format(len(data['data'])))
     if makeTest:
         with open(path_to_SQUAD_dev, encoding='utf-8') as feedsjson:#path to original squad dev file - if you ant to mix some original dev data
             feeds = json.load(feedsjson)
@@ -311,7 +324,7 @@ def make_data(entity="C", makeTest=True, undersample_frac = 0.3, add_dev=0,add_t
             print("Final number of domains in data:")
             print(len(feeds['data']))
             #shuffle(feeds['data'])  ###no need to shuffle the eval set
-            with open('dev-v2.0_'+entity +'.json', mode='w') as f:
+            with open(os.path.join(os.getcwd(), 'train_test_pred_data', 'dev-v2.0_'+entity +'.json'), mode='w') as f:
                 f.write(json.dumps(feeds, indent=2))
     else:
 
@@ -334,10 +347,15 @@ def make_data(entity="C", makeTest=True, undersample_frac = 0.3, add_dev=0,add_t
             print(len(feeds['data']))
             shuffle(feeds['data'])  #shuffle to avoid having small/big gradients only with same data
             ############training data
-            with open('train-v2.0_'+entity +'.json', mode='w') as f:
+
+
+            with open(os.path.join(os.getcwd(), 'train_test_pred_data', 'train-v2.0_'+entity +'.json'), mode='w') as f:
                 f.write(json.dumps(feeds, indent=2))
-        
-make_data(entity="C", makeTest=True, undersample_frac = 0.3, add_dev=0,add_train=20)
+
+#ebmnlp_path="C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\pytorch\\ebm_nlp_2_00"
+#squad_path="C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Python Scripts\\data\\squad"
+
+#make_data(ebmnlp_path,squad_path, entity="I", makeTest=False, undersample_frac = 0.3, add_dev=0,add_train=20)
     
 
 
