@@ -133,7 +133,8 @@ def makeInput(paths, types="P", data_link = ""):
     #sent_df.to_pickle(
         #'backup_pre_prediction_'+ types+ '.pkl')
     sent_df.to_csv(
-        os.path.join('predictions', 'sent_map.csv'))# will add predictions later
+
+        os.path.join(os.getcwd(),'predictions', 'sent_map.csv'))# will add predictions later
 
     #uncomment next few lines if you want to add some orig. squad data to the evaluation!
     #with open(
@@ -144,9 +145,7 @@ def makeInput(paths, types="P", data_link = ""):
 
     #    data['data'] = data['data']  # +feeds['data']
 
-    with open(
-            'dev-v2.0_cord_pred_' + types +'.json',
-            mode='w') as f:
+    with open(os.path.join(os.getcwd(), 'train_test_pred_data','dev-v2.0_cord_pred_' + types +'.json'), mode='w') as f:
         f.write(json.dumps(data, indent=2, cls=NpEncoder))
 
     print(len(data['data']))
@@ -426,28 +425,52 @@ def rewrite_cord_data(path, max_rows = 10000000, min_date=2020):
     #
     #Function takes the metadata with mag mapping file and reformats it a bit, changing column names
     #
+    try:
+        df = pd.read_csv(path)#get data
+        #reassign column names to fit my existing scripts
+        # #cord_uid becomes pmid, title abstact get capital beginning
+        df.columns = [
+        "PMID",
+        "sha",
+        "source_x",
+        "Title",
+        "doi",
+        "pmcid",
+        "pubmed_id",
+        "license",
+        "Abstract",
+        "publish_time",
+        "authors",
+        "journal",
+        "Microsoft Academic Paper ID",
+        "WHO hash Covidence",
+        "has_pdf_parse",
+        "pmc_xml_parse",
+        "full_text_file",
+        "url"]
 
-    df = pd.read_csv(path)#get data
-    #reassign column names to fit my existing scripts
-    # #cord_uid becomes pmid, title abstact get capital beginning
-    df.columns = [
-    "PMID",
-    "sha",
-    "source_x",
-    "Title",
-    "doi",
-    "pmcid",
-    "pubmed_id",
-    "license",
-    "Abstract",
-    "publish_time",
-    "authors",
-    "journal",
-    "Microsoft Academic Paper ID",
-    "WHO hash Covidence",
-    "has_full_text",
-    "full_text_file",
-    "url"]
+    except:#this is the old version of the metadata file
+        df = pd.read_csv(path)  # get data
+        # reassign column names to fit my existing scripts
+        # #cord_uid becomes pmid, title abstact get capital beginning
+        df.columns = [
+            "PMID",
+            "sha",
+            "source_x",
+            "Title",
+            "doi",
+            "pmcid",
+            "pubmed_id",
+            "license",
+            "Abstract",
+            "publish_time",
+            "authors",
+            "journal",
+            "Microsoft Academic Paper ID",
+            "WHO hash Covidence",
+            "has_full_text",
+            "full_text_file",
+            "url"]
 
     new_time=[]
     for time in df["publish_time"].values:
@@ -466,15 +489,13 @@ def rewrite_cord_data(path, max_rows = 10000000, min_date=2020):
     df=df[df["publish_time"] >= min_date]
     df = df[:max_rows]#keep all, or keep only first n
     df.to_csv("covid_data.csv")
+    os.path.join(os.getcwd(), "covid_data.csv")
     print("SAved reformatted input data as covid_data.csv in working directory.")
 
 ###################
-#
-#Sample usage when running locally! When running from kaggle please use the Kaggle submission notebook, it calls the functions from this file!!!
-##################################
 # #first, we need to bring these data in a slightly new format (just changing some column names here to fit my original scripts)
 
-#rewrite_cord_data("metadata.csv", max_rows=150000, min_date=2020)
+rewrite_cord_data("metadata.csv", max_rows=150000, min_date=2020)
 ######################
 
 ###########
