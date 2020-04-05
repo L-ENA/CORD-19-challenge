@@ -158,6 +158,7 @@ def process_input(preds, ids, mode):
 
     preds = [p.lower() for p in preds]  # lower for easier deduplication
     preds = [re.sub(r'[“”"‘’\'\[\]{}«»„‚‹›»«]', "", p).strip() for p in preds]#no need for those chars, especially for all incomplete parentheses
+
     preds = [re.sub(r'^(\d+\s)?patients? ((treated )?with|receiving|undergoing)', '', p).strip() for p in preds]#common sentence beginnings dont add mich either. Note ^ as anchor, omitting this leads to strange results where middle of senences are missing.
     preds = [re.sub(r'^ (\d+[., ]?) + (\s?(cases?( of)? | patients?(with)))', '', p).strip() for p in preds]
     preds = [re.sub(r'^ (\d+[., ]?) + (\s?(cases?( of)? | patients?(with)))', '', p).strip() for p in preds]
@@ -193,6 +194,7 @@ def process_input(preds, ids, mode):
         #preds = [re.sub(r'^(novel coronavirus)\s?(infection|disease)?', '', p).strip() for p in preds]
         preds = [re.sub(r'^-?(confirmed|infected|infection)', '', p).strip() for p in preds]
 
+    preds = [re.sub(r'^ncp', '', p).strip() for p in preds]
 
     ###ids = [re.sub(r'(^\d+)(\..+)', r'\1', i) for i in ids]  # for pmids get abstract ids, not sentence ids
     ids = [re.sub(r'(^.+)(_.+)', r'\1', i) for i in ids]  #TODO check how to split them now
@@ -505,12 +507,12 @@ def rewrite_cord_data(path, max_rows = 10000000, min_date=2020):
 
 #############
 #do something with the preddictions: first we need to post-processs them a tiny bit, then link thm to the original dataset and sort them by frequency
-#connectInput(["predictions//files_1"], mode="Intervention")   #modes "Condition" or else for Patints  #to make unified csv file
+#connectInput(["predictions//files_1"], mode="Condition")   #modes "Condition" or else for Patints  #to make unified csv file
 
 ##################################
 #The we runa simple unsupervised clustering based on substrings in the mined data
 
-#deduplicate_predictions("predictions\\predictionsLENA_I.csv", mode="I")
+#deduplicate_predictions("predictions\\predictionsLENA_C.csv", mode="C")
 
 ##############################
 ##if one is interested in certain conditions, or happy to implement some linking with MeSH or ontologies then this is a good starting point here. Right now it works with regexes

@@ -76,9 +76,10 @@ def make_plot(n_entries=7, mode="P"):
 
         name.append(row[1])  #######data of central point
         condition.append(row[1])
+
         new_x.append(coordinates[index][0])
         new_y.append(coordinates[index][1])
-        ids.append(" ".join(list(df_data.loc[df_data['Condition'] == row[1]]["Pubmed_Search"].values)))
+        ids.append(" ".join(list(df_data.loc[df_data['Condition'] == row[1]]["Cord_ID"].values)))
 
         try:
             popularity.append(df_data.loc[df_data['Condition'] == row[1]]["Counts"].values[0])
@@ -109,11 +110,11 @@ def make_plot(n_entries=7, mode="P"):
                 else:
                     new_y.append(coordinates[index][1] - random.uniform(0, 0.5))
 
-                ids.append(" ".join(list(df_data.loc[df_data['Condition'] == c]["Pubmed_Search"].values)))
+                ids.append(" ".join(list(df_data.loc[df_data['Condition'] == c]["Cord_ID"].values)))
 
                 # print("---")
                 # print(c)
-                # print(df_data.loc[df_data['Condition'] == c]["Pubmed_Search"].values)
+                # print(df_data.loc[df_data['Condition'] == c]["Cord_ID"].values)
                 # print(df_data.loc[df_data['Condition'] == c]["Counts"].values)
                 nrs = df_data.loc[df_data['Condition'] == c]["Counts"].values[0]
                 popularity.append(nrs)
@@ -123,7 +124,7 @@ def make_plot(n_entries=7, mode="P"):
                           columns=["new_x", "new_y", "name", "ids", "popularity", "cluster", "sizes"])
     plot_data(new_df, base_path, plot_name, mode)
 
-
+#make_plot(n_entries=7, mode="C")
 #make_plot(n_entries=7, mode="P")
 #################################################################################################################################################
 #
@@ -205,7 +206,7 @@ def make_plot_kaggle(n_entries=7, mode="P"):
         condition.append(row[1])
         new_x.append(coordinates[index][0])
         new_y.append(coordinates[index][1])
-        ids.append(" ".join(list(df_data.loc[df_data['Condition'] == row[1]]["Pubmed_Search"].values)))
+        ids.append(" ".join(list(df_data.loc[df_data['Condition'] == row[1]]["Cord_ID"].values)))
 
         try:
             popularity.append(df_data.loc[df_data['Condition'] == row[1]]["Counts"].values[0])
@@ -236,11 +237,11 @@ def make_plot_kaggle(n_entries=7, mode="P"):
                 else:
                     new_y.append(coordinates[index][1] - random.uniform(0, 0.5))
 
-                ids.append(" ".join(list(df_data.loc[df_data['Condition'] == c]["Pubmed_Search"].values)))
+                ids.append(" ".join(list(df_data.loc[df_data['Condition'] == c]["Cord_ID"].values)))
 
                 # print("---")
                 # print(c)
-                # print(df_data.loc[df_data['Condition'] == c]["Pubmed_Search"].values)
+                # print(df_data.loc[df_data['Condition'] == c]["Cord_ID"].values)
                 # print(df_data.loc[df_data['Condition'] == c]["Counts"].values)
                 nrs = df_data.loc[df_data['Condition'] == c]["Counts"].values[0]
                 popularity.append(nrs)
