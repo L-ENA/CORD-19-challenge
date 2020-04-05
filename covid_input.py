@@ -130,10 +130,10 @@ def makeInput(paths, types="P", data_link = ""):
 
     # length 1st batch: 1746010
     sent_df = pd.DataFrame(row_list)
-    sent_df.to_pickle(
-        'backup_pre_prediction_'+ types+ '.pkl')
+    #sent_df.to_pickle(
+        #'backup_pre_prediction_'+ types+ '.pkl')
     sent_df.to_csv(
-        'predictions//sent_map.csv')  # will add predictions later
+        os.path.join('predictions', 'sent_map.csv'))# will add predictions later
 
     #uncomment next few lines if you want to add some orig. squad data to the evaluation!
     #with open(
@@ -251,9 +251,8 @@ def process_input(preds, ids, mode):
     return df
 
 
-def connectInput(mode="Condition"):
-    paths = [
-        "predictions//files_1"]
+def connectInput(paths,mode="Condition"):
+
 
     predicted = []
     destinationDf = pd.DataFrame(columns=['ID', 'Sent'])
@@ -286,13 +285,13 @@ def connectInput(mode="Condition"):
 
     if mode == "Condition":
         results.to_csv(
-            'predictions\\predictionsLENA_C.csv')
+            os.path.join('predictions', 'predictionsLENA_C.csv'))
     elif mode == "Intervention":
         results.to_csv(
-            'predictions\\predictionsLENA_I.csv')
+            os.path.join('predictions', 'predictionsLENA_I.csv'))
     else:
         results.to_csv(
-            'predictions\\predictionsLENA_P.csv')
+            os.path.join('predictions', 'predictionsLENA_P.csv'))
 
     # print(len(ids))
     print(len(preds))
@@ -357,13 +356,14 @@ def deduplicate_predictions(path, top_n=50000, mode="C"):
     deduped = pd.DataFrame(zip(k, v))
     if mode == "C":
         deduped.to_csv(
-            "predictions\\C_deduped.csv")
+            os.path.join('predictions', 'C_deduped.csv'))
+
     elif mode == "I":
         deduped.to_csv(
-            "predictions\\I_deduped.csv")
+            os.path.join('predictions', 'I_deduped.csv'))
     else:
         deduped.to_csv(
-            "predictions\\P_deduped.csv")
+            os.path.join('predictions', 'P_deduped.csv'))
 
     print(len(condition))
 
@@ -420,7 +420,7 @@ def custom_deduplication(path):
 
     deduped = pd.DataFrame(zip(k, v))
     deduped.to_csv(
-        "C:\\Users\\xf18155\\OneDrive - University of Bristol\\MyFiles-Migrated\\Documents\\Sarah P mining\\immunoglobulin\\predictions\\P_map_grey.csv")
+        "P_map_grey.csv")
 
 def rewrite_cord_data(path, max_rows = 10000000, min_date=2020):
     #
@@ -481,10 +481,11 @@ def rewrite_cord_data(path, max_rows = 10000000, min_date=2020):
 
 #############
 #do something with the preddictions: first we need to post-processs them a tiny bit, then link thm to the original dataset and sort them by frequency
-#connectInput(mode="Population")   #modes "Condition" or else for Patints  #to make unified csv file
+#connectInput(["predictions//files_1"], mode="Population")   #modes "Condition" or else for Patints  #to make unified csv file
 
 ##################################
 #The we runa simple unsupervised clustering based on substrings in the mined data
+
 #deduplicate_predictions("predictions\\predictionsLENA_P.csv", mode="P")
 
 ##############################
