@@ -285,13 +285,13 @@ def connectInput(paths,mode="Condition"):
 
     if mode == "Condition":
         results.to_csv(
-            os.path.join('predictions', 'predictionsLENA_C.csv'))
+            os.path.join(os. getcwd(),'predictions', 'predictionsLENA_C.csv'))
     elif mode == "Intervention":
         results.to_csv(
-            os.path.join('predictions', 'predictionsLENA_I.csv'))
+            os.path.join(os. getcwd(),'predictions', 'predictionsLENA_I.csv'))
     else:
         results.to_csv(
-            os.path.join('predictions', 'predictionsLENA_P.csv'))
+            os.path.join(os. getcwd(),'predictions', 'predictionsLENA_P.csv'))
 
     # print(len(ids))
     print(len(preds))
@@ -356,14 +356,14 @@ def deduplicate_predictions(path, top_n=50000, mode="C"):
     deduped = pd.DataFrame(zip(k, v))
     if mode == "C":
         deduped.to_csv(
-            os.path.join('predictions', 'C_deduped.csv'))
+            os.path.join(os. getcwd(),'predictions', 'C_deduped.csv'))
 
     elif mode == "I":
         deduped.to_csv(
-            os.path.join('predictions', 'I_deduped.csv'))
+            os.path.join(os. getcwd(),'predictions', 'I_deduped.csv'))
     else:
         deduped.to_csv(
-            os.path.join('predictions', 'P_deduped.csv'))
+            os.path.join(os. getcwd(),'predictions', 'P_deduped.csv'))
 
     print(len(condition))
 
@@ -481,12 +481,12 @@ def rewrite_cord_data(path, max_rows = 10000000, min_date=2020):
 
 #############
 #do something with the preddictions: first we need to post-processs them a tiny bit, then link thm to the original dataset and sort them by frequency
-#connectInput(["predictions//files_1"], mode="Population")   #modes "Condition" or else for Patints  #to make unified csv file
+connectInput(["predictions//files_1"], mode="Intervention")   #modes "Condition" or else for Patints  #to make unified csv file
 
 ##################################
 #The we runa simple unsupervised clustering based on substrings in the mined data
 
-#deduplicate_predictions("predictions\\predictionsLENA_P.csv", mode="P")
+deduplicate_predictions("predictions\\predictionsLENA_I.csv", mode="I")
 
 ##############################
 ##if one is interested in certain conditions, or happy to implement some linking with MeSH or ontologies then this is a good starting point here. Right now it works with regexes
