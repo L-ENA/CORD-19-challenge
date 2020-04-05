@@ -469,6 +469,9 @@ def rewrite_cord_data(path, max_rows = 10000000, min_date=2020):
     print("SAved reformatted input data as covid_data.csv in working directory.")
 
 ###################
+#
+#Sample usage when running locally! When running from kaggle please use the Kaggle submission notebook, it calls the functions from this file!!!
+##################################
 # #first, we need to bring these data in a slightly new format (just changing some column names here to fit my original scripts)
 
 #rewrite_cord_data("metadata.csv", max_rows=150000, min_date=2020)
@@ -481,12 +484,12 @@ def rewrite_cord_data(path, max_rows = 10000000, min_date=2020):
 
 #############
 #do something with the preddictions: first we need to post-processs them a tiny bit, then link thm to the original dataset and sort them by frequency
-connectInput(["predictions//files_1"], mode="Intervention")   #modes "Condition" or else for Patints  #to make unified csv file
+#connectInput(["predictions//files_1"], mode="Intervention")   #modes "Condition" or else for Patints  #to make unified csv file
 
 ##################################
 #The we runa simple unsupervised clustering based on substrings in the mined data
 
-deduplicate_predictions("predictions\\predictionsLENA_I.csv", mode="I")
+#deduplicate_predictions("predictions\\predictionsLENA_I.csv", mode="I")
 
 ##############################
 ##if one is interested in certain conditions, or happy to implement some linking with MeSH or ontologies then this is a good starting point here. Right now it works with regexes
