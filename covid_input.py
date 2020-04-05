@@ -495,7 +495,7 @@ def rewrite_cord_data(path, max_rows = 10000000, min_date=2020):
 ###################
 # #first, we need to bring these data in a slightly new format (just changing some column names here to fit my original scripts)
 
-rewrite_cord_data("metadata.csv", max_rows=150000, min_date=2020)
+#rewrite_cord_data("metadata.csv", max_rows=150000, min_date=2020)
 ######################
 
 ###########
